@@ -1,8 +1,8 @@
 const uuid4 = require('uuid4');
 
 class UUID4 {
-  constructor(id = null) {
-    this.id = this.tryUUID4(id);
+  constructor(value = null) {
+    this.value = this.tryUUID4(value);
   }
 
   tryUUID4(value) {
