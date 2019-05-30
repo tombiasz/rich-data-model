@@ -1,4 +1,4 @@
-const validator = require('validator');
+const EmialAddress = require('./emailAddress');
 
 class Email {
   constructor({
@@ -7,16 +7,8 @@ class Email {
     createdAt = Date.now(),
   }) {
     this.id = id;
-    this.email = this.tryEmail(email);
+    this.email = new EmialAddress(email).value;
     this.createdAt = createdAt;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  tryEmail(email) {
-    if (!validator.isEmail(email)) {
-      throw new Error(`${email} is not a valid email`);
-    }
-    return email;
   }
 }
 
