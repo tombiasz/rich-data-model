@@ -17,12 +17,10 @@ class UUID4 {
     throw new Error('Invalid uuid4');
   }
 
-  // eslint-disable-next-line class-methods-use-this
   isValidUUID4(value) {
     return uuid4.valid(value);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   generateUUID4() {
     return uuid4();
   }

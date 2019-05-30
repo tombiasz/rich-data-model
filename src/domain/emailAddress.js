@@ -13,12 +13,10 @@ class EmailAddress {
     throw new Error(`${value} is not a valid email address`);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   normalize(value) {
     return String(value);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   isValid(value) {
     return validator.isEmail(value);
   }
