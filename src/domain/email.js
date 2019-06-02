@@ -1,13 +1,11 @@
-const EmialAddress = require('./emailAddress');
+const EmailAddress = require('./emailAddress');
 
 class Email {
   constructor({
-    id,
     email,
     createdAt = Date.now(),
   }) {
-    this.id = id;
-    this.email = new EmialAddress(email).value;
+    this.email = new EmailAddress(email).value;
     this.createdAt = createdAt;
   }
 }
