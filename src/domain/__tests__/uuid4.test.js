@@ -1,4 +1,3 @@
-const uuid4 = require('uuid4');
 const UUID4 = require('../uuid4');
 
 describe('UUID value object', () => {
@@ -7,7 +6,6 @@ describe('UUID value object', () => {
       const uuid = new UUID4();
 
       expect(uuid.value).not.toBeUndefined();
-      expect(uuid4.valid(uuid.value)).toBe(true);
     });
 
     test('when id is not a valid uuid4 should throw error', () => {
