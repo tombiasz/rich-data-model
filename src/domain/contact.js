@@ -1,24 +1,27 @@
 const ContactEmail = require('./contactEmail');
+const UUID4 = require('./uuid4');
 
 const EMAILS_PER_CONTACT_LIMIT = 3;
 
 class Contact {
   constructor({
     id,
+    ownerId,
     firstName,
     lastName,
     description,
     createdAt = Date.now(),
     updatedAt = Date.now(),
-    deletedAt = null,
+    archivedAt = null,
   }) {
-    this.id = id;
+    this.id = new UUID4(id).value;
+    this.ownerId = new UUID4(ownerId, { generateIfNull: false }).value;
     this.firstName = firstName;
     this.lastName = lastName;
     this.description = description;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
-    this.deletedAt = deletedAt;
+    this.archivedAt = archivedAt;
     this.emails = [];
   }
 
@@ -26,8 +29,8 @@ class Contact {
     return `${this.firstName} ${this.lastName}`;
   }
 
-  get isDeleted() {
-    return this.deletedAt !== null;
+  isArchived() {
+    return this.archivedAt !== null;
   }
 
   addEmail(emailId, isStarred) {
