@@ -33,6 +33,13 @@ class Contact {
     return this.archivedAt !== null;
   }
 
+  archive() {
+    this.archivedAt = Date.now();
+    this.emails.forEach(o => o.markAsDeleted());
+    this.touch();
+    return this;
+  }
+
   addEmail(emailId, isStarred) {
     if (this.isEmailsLimitExceeded()) {
       throw new Error(`You can only have ${EMAILS_PER_CONTACT_LIMIT} emails in single contact`);
@@ -73,13 +80,6 @@ class Contact {
 
   touch() {
     this.updatedAt = Date.now();
-    return this;
-  }
-
-  markAsDeleted() {
-    this.deletedAt = Date.now();
-    this.emails.forEach(o => o.markAsDeleted());
-    this.touch();
     return this;
   }
 

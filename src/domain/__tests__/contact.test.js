@@ -6,6 +6,8 @@ const validContactProps = {
   firstName: 'foo',
   lastName: 'bar',
   description: 'fizz buzz',
+  createdAt: 631152000,
+  updatedAt: 631152000,
 }
 
 describe('Contact entity', () => {
@@ -80,7 +82,7 @@ describe('Contact entity', () => {
     });
   });
 
-  describe('isArchived', () => {
+  describe('isArchived()', () => {
     test('should return true if contact is archived', () => {
       const contact = new Contact({ 
         ...validContactProps,
@@ -92,6 +94,21 @@ describe('Contact entity', () => {
     test('should return false if contact is not archived', () => {
       const contact = new Contact(validContactProps);
       expect(contact.isArchived()).toBe(false);
+    });
+  });
+
+  describe('archive()', () => {
+    test('should mark contact as archived', () => {
+      const contact = new Contact(validContactProps);
+      expect(contact.archivedAt).toBe(null);
+      contact.archive();
+      expect(contact.archivedAt).toBeLessThanOrEqual(Date.now());
+    });
+
+    test('should mark contact as updated', () => {
+      const contact = new Contact(validContactProps);
+      contact.archive();
+      expect(contact.archivedAt).toBeLessThanOrEqual(Date.now());
     });
   });
 });
