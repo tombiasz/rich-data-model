@@ -1,3 +1,4 @@
+const isNil = require('lodash.isnil');
 const ContactEmail = require('./contactEmail');
 const UUID4 = require('./uuid4');
 
@@ -10,9 +11,9 @@ class Contact {
     firstName,
     lastName,
     description,
-    createdAt = Date.now(),
-    updatedAt = Date.now(),
-    archivedAt = null,
+    createdAt,
+    updatedAt,
+    archivedAt,
   }) {
     this.id = new UUID4(id).value;
     this.ownerId = new UUID4(ownerId, { generateIfNull: false }).value;
@@ -30,7 +31,7 @@ class Contact {
   }
 
   isArchived() {
-    return this.archivedAt !== null;
+    return !isNil(this.archivedAt);
   }
 
   archive() {

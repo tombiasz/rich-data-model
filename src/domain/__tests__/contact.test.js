@@ -8,6 +8,7 @@ const validContactProps = {
   description: 'fizz buzz',
   createdAt: 631152000,
   updatedAt: 631152000,
+  archivedAt: null,
 }
 
 describe('Contact entity', () => {
@@ -48,29 +49,6 @@ describe('Contact entity', () => {
         const { ownerId } = validContactProps;
         const contact = new Contact(validContactProps);
         expect(contact.id).toBe(ownerId);
-      });
-    });
-
-    describe('createdAt', () => {
-      test('should have default value set to now', () => {
-        const { createdAt, ...props } = validContactProps;
-        const contact = new Contact(props);
-        expect(contact.createdAt).toBeLessThanOrEqual(Date.now());
-      });
-    });
-
-    describe('updatedAt', () => {
-      test('should have default value set to now', () => {
-        const { updatedAr, ...props } = validContactProps;
-        const contact = new Contact(props);
-        expect(contact.updatedAt).toBeLessThanOrEqual(Date.now());
-      });
-    });
-    
-    describe('archivedAt', () => {
-      test('should have default value set to null', () => {
-        const contact = new Contact(validContactProps);
-        expect(contact.archivedAt).toBe(null);
       });
     });
   });
