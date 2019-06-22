@@ -8,7 +8,7 @@ class ContactEmail {
   }) {
     this.emailId = emailId;
     this.isStarred = isStarred;
-    this.createAt = createdAt;
+    this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.deletedAt = deletedAt;
   }
