@@ -1,47 +1,33 @@
 class ContactEmail {
   constructor({
     emailId,
-    isStarred = false,
-    createdAt = Date.now(),
-    updatedAt = Date.now(),
-    deletedAt = null,
-  }) {
+    isStarred,
+    createdAt,
+    updatedAt,
+  },
+  timeProvider) {
     this.emailId = emailId;
     this.isStarred = isStarred;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
-    this.deletedAt = deletedAt;
+
+    this.timeProvider = timeProvider;
   }
 
-  get isDeleted() {
-    return this.deletedAt !== null;
-  }
-
-
-  start() {
-    this.start = true;
+  star() {
+    this.isStarred = true;
     this.touch();
     return this;
   }
 
   unstar() {
-    this.star = false;
+    this.isStarred = false;
     this.touch();
     return this;
   }
 
   touch() {
-    this.updatedAt = Date.now();
-    return this;
-  }
-
-  markAsDeleted() {
-    if (this.isDeleted) {
-      return this;
-    }
-
-    this.deletedAt = Date.now();
-    this.touch();
+    this.updatedAt = this.timeProvider.now();
     return this;
   }
 }

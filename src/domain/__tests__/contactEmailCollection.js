@@ -7,7 +7,6 @@ const makeContactEmail = props => new ContactEmail({
   isStared: false,
   createdAt: 631152000,
   updatedAt: 631152000,
-  archivedAt: null,
   ...props,
 });
 
@@ -35,7 +34,7 @@ describe('ContactEmailCollection', () => {
     });
 
     test('should not add same email twice', () => {
-      const email = makeContactEmail()
+      const email = makeContactEmail();
       collection
         .addEmail(email)
         .addEmail(email)
