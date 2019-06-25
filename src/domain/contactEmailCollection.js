@@ -1,8 +1,9 @@
 const ContactEmail = require('./contactEmail');
 
 class ContactEmailCollection {
-  constructor() {
+  constructor(timeProvider) {
     this.emails = [];
+    this.timeProvider = timeProvider;
   }
 
   * [Symbol.iterator]() {
@@ -27,7 +28,12 @@ class ContactEmailCollection {
       createdAt,
       updatedAt,
       deletedAt,
-    });
+    },
+    this.timeProvider);
+
+    if (email.isStarred) {
+      this.resetStarredEmails();
+    }
 
     this.emails.push(email);
     return this;
@@ -35,6 +41,11 @@ class ContactEmailCollection {
 
   removeEmail({ emailId }) {
     this.emails = this.emails.filter(e => e.emailId !== emailId);
+    return this;
+  }
+
+  resetStarredEmails() {
+    this.emails.forEach(o => o.unstar());
     return this;
   }
 

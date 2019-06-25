@@ -2,19 +2,23 @@ const UUID4 = require('../uuid4');
 const ContactEmailCollection = require('../contactEmailCollection');
 const ContactEmail = require('../contactEmail');
 
+const timeProvider = {
+  now: () => 123456,
+};
+
 const makeContactEmail = props => new ContactEmail({
   emailId: new UUID4().value,
-  isStared: false,
+  isStarred: false,
   createdAt: 631152000,
   updatedAt: 631152000,
   ...props,
-});
+}, timeProvider);
 
 describe('ContactEmailCollection', () => {
   let collection = null;
 
   beforeEach(() => {
-    collection = new ContactEmailCollection();
+    collection = new ContactEmailCollection(timeProvider);
   });
 
   describe('its instance', () => {
@@ -43,6 +47,24 @@ describe('ContactEmailCollection', () => {
       const result = Array.from(collection);
 
       expect(result).toEqual([email]);
+    });
+
+    test('should reset starred email if new email is starred', () => {
+      const spy = jest.spyOn(collection, 'resetStarredEmails');
+      const email = makeContactEmail({ isStarred: true });
+
+      collection.addEmail(email);
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    test('should not reset starred email if new email is not starred', () => {
+      const spy = jest.spyOn(collection, 'resetStarredEmails');
+      const email = makeContactEmail({ isStarred: false });
+
+      collection.addEmail(email);
+
+      expect(spy).not.toHaveBeenCalled();
     });
   });
 
@@ -116,6 +138,20 @@ describe('ContactEmailCollection', () => {
         .removeEmail({ emailId: email.emailId });
 
       expect(collection.size()).toBe(0);
+    });
+  });
+
+  describe('resetStarredEmails()', () => {
+    test('should reset isStarred flag on all emails', () => {
+      collection
+        .addEmail(makeContactEmail({ isStarred: false }))
+        .addEmail(makeContactEmail({ isStarred: true }));
+
+      collection.resetStarredEmails();
+
+      const result = Array.from(collection);
+
+      result.forEach(e => expect(e.isStarred).toBe(false));
     });
   });
 });
