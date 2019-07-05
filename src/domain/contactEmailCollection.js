@@ -15,7 +15,6 @@ class ContactEmailCollection {
     isStarred,
     createdAt,
     updatedAt,
-    deletedAt,
   }) {
     const exists = this.findEmailById({ emailId });
     if (exists) {
@@ -27,7 +26,6 @@ class ContactEmailCollection {
       isStarred,
       createdAt,
       updatedAt,
-      deletedAt,
     },
     this.timeProvider);
 
