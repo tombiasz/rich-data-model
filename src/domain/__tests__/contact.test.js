@@ -10,6 +10,16 @@ const validContactProps = {
   updatedAt: 631152000,
   archivedAt: null,
 }
+const validContactEmailProps = {
+  emailId: '16357d7a-5738-4d8b-adc7-b8fa10cd5331',
+  isStarred: false,
+  createdAt: 631152000,
+  updatedAt: 631152001,
+};
+const now = 123456;
+const timeProvider = {
+  now: () => now,
+};
 
 describe('Contact entity', () => {
   describe('when creating a new Contact instance', () => {
@@ -60,33 +70,43 @@ describe('Contact entity', () => {
     });
   });
 
-  describe('isArchived()', () => {
-    test('should return true if contact is archived', () => {
-      const contact = new Contact({ 
-        ...validContactProps,
-        archivedAt: Date.now(),
-      });
-      expect(contact.isArchived()).toBe(true);
+  describe('addEmail', () => {
+    test('should add email to emails list', () => {
+      const contact = new Contact(validContactProps, timeProvider);
+      expect(contact.emails.size()).toBe(0);
+      contact.addEmail(validContactEmailProps);
+      expect(contact.emails.size()).toBe(1);
     });
 
-    test('should return false if contact is not archived', () => {
-      const contact = new Contact(validContactProps);
-      expect(contact.isArchived()).toBe(false);
+    test('should set updatedAt to now', () => {
+      const contact = new Contact(validContactProps, timeProvider);
+      contact.addEmail(validContactEmailProps);
+      expect(contact.updatedAt).toBe(now);
     });
   });
 
-  describe('archive()', () => {
-    test('should mark contact as archived', () => {
-      const contact = new Contact(validContactProps);
-      expect(contact.archivedAt).toBe(null);
-      contact.archive();
-      expect(contact.archivedAt).toBeLessThanOrEqual(Date.now());
+  describe('removeEmail', () => {
+    test('should remove email from emails list', () => {
+      const contact = new Contact(validContactProps, timeProvider);
+      contact.addEmail(validContactEmailProps);
+      expect(contact.emails.size()).toBe(1);
+      contact.removeEmail({ emailId: validContactEmailProps.emailId });
+      expect(contact.emails.size()).toBe(0);
     });
 
-    test('should mark contact as updated', () => {
-      const contact = new Contact(validContactProps);
-      contact.archive();
-      expect(contact.archivedAt).toBeLessThanOrEqual(Date.now());
+    test('should set updatedAt to now', () => {
+      const contact = new Contact(validContactProps, timeProvider);
+      contact.addEmail(validContactEmailProps);
+      contact.removeEmail(validContactEmailProps.emailId);
+      expect(contact.updatedAt).toBe(now);
+    });
+  });
+
+  describe('touch()', () => {
+    test('should set udatedAt to now', () => {
+      const contact = new Contact(validContactProps, timeProvider);
+      contact.touch();
+      expect(contact.updatedAt).toBe(now);
     });
   });
 });

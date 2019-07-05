@@ -1,7 +1,7 @@
 const ContactEmail = require('../contactEmail');
 
 const validProps = {
-  caId: '16357d7a-5738-4d8b-adc7-b8fa10cd5331',
+  emailId: '16357d7a-5738-4d8b-adc7-b8fa10cd5331',
   isStarred: false,
   createdAt: 631152000,
   updatedAt: 631152001,

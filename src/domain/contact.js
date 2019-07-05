@@ -1,8 +1,5 @@
-const isNil = require('lodash.isnil');
-const ContactEmail = require('./contactEmail');
+const ContactEmailCollection = require('./contactEmailCollection');
 const UUID4 = require('./uuid4');
-
-const EMAILS_PER_CONTACT_LIMIT = 3;
 
 class Contact {
   constructor({
@@ -13,8 +10,7 @@ class Contact {
     description,
     createdAt,
     updatedAt,
-    archivedAt,
-  }) {
+  }, timeProvider) {
     this.id = new UUID4(id).value;
     this.ownerId = new UUID4(ownerId, { generateIfNull: false }).value;
     this.firstName = firstName;
@@ -22,74 +18,39 @@ class Contact {
     this.description = description;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
-    this.archivedAt = archivedAt;
-    this.emails = [];
+    this.emails = new ContactEmailCollection(timeProvider);
+    this.timeProvider = timeProvider;
   }
 
   get fullName() {
     return `${this.firstName} ${this.lastName}`;
   }
 
-  isArchived() {
-    return !isNil(this.archivedAt);
-  }
-
-  archive() {
-    this.archivedAt = Date.now();
-    this.emails.forEach(o => o.markAsDeleted());
+  addEmail({
+    emailId,
+    isStarred,
+    createdAt,
+    updatedAt,
+  }) {
+    this.emails.addEmail({
+      emailId,
+      isStarred,
+      createdAt,
+      updatedAt,
+    });
     this.touch();
     return this;
   }
 
-  addEmail(emailId, isStarred) {
-    if (this.isEmailsLimitExceeded()) {
-      throw new Error(`You can only have ${EMAILS_PER_CONTACT_LIMIT} emails in single contact`);
-    }
-
-    if (this.isEmailExists(emailId)) {
-      return this;
-    }
-
-    const newEmail = new ContactEmail({ emailId, isStarred });
-
-    if (newEmail.isStarred) {
-      this.resetStarredEmails();
-    }
-
-    this.emails.push(newEmail);
-    this.touch();
-
-    return this;
-  }
-
-  removeEmail(emailId) {
-    const emailToRemove = this.emails.find(o => o.emailId === emailId);
-    emailToRemove.markAsDeleted();
+  removeEmail({ emailId }) {
+    this.emails.removeEmail({ emailId });
     this.touch();
     return this;
-  }
-
-  resetStarredEmails() {
-    this.emails.forEach(o => o.unstar());
-    this.touch();
-    return this;
-  }
-
-  isEmailsLimitExceeded() {
-    return this.countEmails() < EMAILS_PER_CONTACT_LIMIT;
   }
 
   touch() {
-    this.updatedAt = Date.now();
+    this.updatedAt = this.timeProvider.now();
     return this;
-  }
-
-  isEmailExists(emailId) {
-    return this.emails.some(o => !o.isDeleted && o.emailId === emailId);
-  }
-
-  countEmails() {
-    return this.emails.filter(o => !o.isDeleted).length;
   }
 }
 
