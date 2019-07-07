@@ -1,6 +1,3 @@
-const ContactEmailCollection = require('./contactEmailCollection');
-const UUID4 = require('../uuid4');
-
 class Contact {
   constructor({
     id,
@@ -8,17 +5,18 @@ class Contact {
     firstName,
     lastName,
     description,
+    emails,
     createdAt,
     updatedAt,
   }, timeProvider) {
-    this.id = new UUID4(id).value;
-    this.ownerId = new UUID4(ownerId, { generateIfNull: false }).value;
+    this.id = id;
+    this.ownerId = ownerId;
     this.firstName = firstName;
     this.lastName = lastName;
     this.description = description;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
-    this.emails = new ContactEmailCollection(timeProvider);
+    this.emails = emails;
     this.timeProvider = timeProvider;
   }
 

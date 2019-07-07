@@ -1,11 +1,17 @@
 const Contact = require('../contact');
+const ContactEmailCollection = require('../contactEmailCollection');
 
+const now = 123456;
+const timeProvider = {
+  now: () => now,
+};
 const validContactProps = {
   id: '16357d7a-5738-4d8b-adc7-b8fa10cd5331',
   ownerId: '16357d7a-5738-4d8b-adc7-b8fa10cd5331',
   firstName: 'foo',
   lastName: 'bar',
   description: 'fizz buzz',
+  emails: new ContactEmailCollection(timeProvider),
   createdAt: 631152000,
   updatedAt: 631152000,
   archivedAt: null,
@@ -16,50 +22,18 @@ const validContactEmailProps = {
   createdAt: 631152000,
   updatedAt: 631152001,
 };
-const now = 123456;
-const timeProvider = {
-  now: () => now,
-};
 
 describe('Contact entity', () => {
-  describe('when creating a new Contact instance', () => {
-    describe('id', () => {
-      test('when value was not provided should generate uuid4', () => {
-        const { id, ...props } = validContactProps;
-        const contact = new Contact(props);
-        expect(contact.id).not.toBeUndefined();
-      });
-
-      test('when is not a valid uuid4 should throw error', () => {
-        const { id, ...props } = validContactProps;
-        expect(() => new Contact({ id: 1234, ...props }))
-          .toThrow(Error);
-      });
-
-      test('when is valid uuid4 should not throw error', () => {
-        const { id } = validContactProps;
-        const contact = new Contact(validContactProps);
-        expect(contact.id).toBe(id);
-      });
-    });
-
-    describe('ownerid', () => {
-      test('when value was not provided should throw error', () => {
-        const { ownerId, ...props } = validContactProps;
-        expect(() => new Contact(props)).toThrow(Error);
-      });
-
-      test('when is not a valid uuid4 should throw error', () => {
-        const { ownerId, ...props } = validContactProps;
-        expect(() => new Contact({ ownerId: 1234, ...props }))
-          .toThrow(Error);
-      });
-
-      test('when is valid uuid4 should not throw error', () => {
-        const { ownerId } = validContactProps;
-        const contact = new Contact(validContactProps);
-        expect(contact.id).toBe(ownerId);
-      });
+  describe('new instance', () => {
+    test('should set initial attributes', () => {
+      const contact = new Contact(validContactProps);
+      expect(contact.id).toBe(validContactProps.id);
+      expect(contact.ownerId).toBe(validContactProps.ownerId);
+      expect(contact.firstName).toBe(validContactProps.firstName);
+      expect(contact.lastName).toBe(validContactProps.lastName);
+      expect(contact.description).toBe(validContactProps.description);
+      expect(contact.createdAt).toBe(validContactProps.createdAt);
+      expect(contact.updatedAt).toBe(validContactProps.updatedAt);
     });
   });
 
