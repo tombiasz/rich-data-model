@@ -11,16 +11,23 @@ const makeContact = ({
   description,
   createdAt,
   updatedAt,
-}) => new Contact({
-  id: new UUID4(id).value,
-  ownerId: new UUID4(ownerId, { generateIfNull: false }).value,
-  firstName,
-  lastName,
-  description,
-  email: new ContactEmailCollection(timeProvider),
-  createdAt,
-  updatedAt,
-}, timeProvider);
+}) => {
+  const _id = new UUID4(id);
+  const _ownerId = new UUID4(ownerId, { generateIfNull: false });
+  const emails = new ContactEmailCollection(timeProvider);
+
+  return new Contact({
+    id: _id.valie,
+    ownerId: _ownerId.value,
+    firstName,
+    lastName,
+    description,
+    emails,
+    createdAt,
+    updatedAt,
+  },
+  timeProvider);
+};
 
 module.exports = {
   makeContact,
