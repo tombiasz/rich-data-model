@@ -14,6 +14,7 @@ module.exports = {
   },
   rules: {
     "class-methods-use-this": 0,
+    "no-underscore-dangle": 0,
   },
   plugins: ['jest'],
   env: {
