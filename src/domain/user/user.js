@@ -1,13 +1,11 @@
-const UUID4 = require('../uuid4');
-
 class User {
   constructor({
-    id = null,
+    id,
     username,
-    createdAt = Date.now(),
-    updatedAt = Date.now(),
+    createdAt,
+    updatedAt,
   }) {
-    this.id = new UUID4(id).value;
+    this.id = id;
     this.username = username;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
