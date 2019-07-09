@@ -15,6 +15,8 @@ const makeContact = ({
   const _id = new UUID4(id);
   const _ownerId = new UUID4(ownerId, { generateIfNull: false });
   const emails = new ContactEmailCollection(timeProvider);
+  const _createdAt = createdAt || timeProvider.now();
+  const _updatedAt = updatedAt || timeProvider.now();
 
   return new Contact({
     id: _id.valie,
@@ -23,8 +25,8 @@ const makeContact = ({
     lastName,
     description,
     emails,
-    createdAt,
-    updatedAt,
+    createdAt: _createdAt,
+    updatedAt: _updatedAt,
   },
   timeProvider);
 };
