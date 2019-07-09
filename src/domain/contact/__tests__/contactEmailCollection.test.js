@@ -1,4 +1,4 @@
-const UUID4 = require('../../uuid4');
+const AutogenerateUUID4 = require('../../autogenerateUuid4');
 const ContactEmailCollection = require('../contactEmailCollection');
 const ContactEmail = require('../contactEmail');
 
@@ -7,7 +7,7 @@ const timeProvider = {
 };
 
 const makeContactEmail = props => new ContactEmail({
-  emailId: new UUID4().value,
+  emailId: new AutogenerateUUID4().value,
   isStarred: false,
   createdAt: 631152000,
   updatedAt: 631152000,

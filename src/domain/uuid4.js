@@ -1,10 +1,8 @@
 const uuid4 = require('uuid4');
 
 class UUID4 {
-  constructor(value = null, { generateIfNull = true } = {}) {
-    this.value = value === null && generateIfNull
-      ? this.generate()
-      : this.try(value);
+  constructor(value) {
+    this.value = this.try(value);
   }
 
   try(value) {
@@ -17,10 +15,6 @@ class UUID4 {
 
   isValid(value) {
     return uuid4.valid(value);
-  }
-
-  generate() {
-    return uuid4();
   }
 }
 
