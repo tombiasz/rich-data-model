@@ -1,4 +1,4 @@
-const UUID4 = require('./uuid4');
+const UUID4 = require('../uuid4');
 
 class User {
   constructor({
