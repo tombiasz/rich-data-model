@@ -1,4 +1,5 @@
 const validator = require('validator');
+const InvalidEmailAddressError = require('./invalidEmailAddressError');
 
 class EmailAddress {
   constructor(value) {
@@ -10,7 +11,7 @@ class EmailAddress {
       return value;
     }
 
-    throw new Error(`${value} is not a valid email address`);
+    throw new InvalidEmailAddressError(`${value} is not a valid email address`);
   }
 
   normalize(value) {
