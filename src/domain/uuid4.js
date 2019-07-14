@@ -1,4 +1,5 @@
 const uuid4 = require('uuid4');
+const InvalidUUID4Error = require('./invalidUuid4Error');
 
 class UUID4 {
   constructor(value) {
@@ -10,7 +11,7 @@ class UUID4 {
       return value;
     }
 
-    throw new Error('Invalid uuid4');
+    throw new InvalidUUID4Error('Invalid uuid4');
   }
 
   isValid(value) {
