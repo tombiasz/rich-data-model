@@ -1,6 +1,7 @@
 const AutogenerateUUID4 = require('../../autogenerateUuid4');
 const ContactEmailCollection = require('../contactEmailCollection');
 const ContactEmail = require('../contactEmail');
+const ContactEmailAlreadyExistsError = require('../contactEmailAlreadyExistsError');
 
 const timeProvider = {
   now: () => 123456,
@@ -37,16 +38,18 @@ describe('ContactEmailCollection', () => {
       expect(result).toEqual([email]);
     });
 
-    test('should not add same email twice', () => {
+    test('should throw error if email already exists', () => {
       const email = makeContactEmail();
-      collection
-        .addEmail(email)
-        .addEmail(email)
-        .addEmail(email);
 
-      const result = Array.from(collection);
+      expect.assertions(1);
 
-      expect(result).toEqual([email]);
+      try {
+        collection
+          .addEmail(email)
+          .addEmail(email);
+      } catch (err) {
+        expect(err).toBeInstanceOf(ContactEmailAlreadyExistsError);
+      }
     });
 
     test('should reset starred email if new email is starred', () => {

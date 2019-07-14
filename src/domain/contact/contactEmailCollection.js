@@ -1,4 +1,5 @@
 const ContactEmail = require('./contactEmail');
+const ContactEmailAlreadyExistsError = require('./contactEmailAlreadyExistsError');
 
 class ContactEmailCollection {
   constructor(timeProvider) {
@@ -18,7 +19,7 @@ class ContactEmailCollection {
   }) {
     const exists = this.findEmailById({ emailId });
     if (exists) {
-      return this;
+      throw new ContactEmailAlreadyExistsError();
     }
 
     const email = new ContactEmail({
