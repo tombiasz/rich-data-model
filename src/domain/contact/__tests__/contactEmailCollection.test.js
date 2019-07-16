@@ -2,10 +2,18 @@ const AutogenerateUUID4 = require('../../autogenerateUuid4');
 const ContactEmailCollection = require('../contactEmailCollection');
 const ContactEmail = require('../contactEmail');
 const ContactEmailAlreadyExistsError = require('../contactEmailAlreadyExistsError');
+const ContactEmailPolicyViolationError = require('../contactEmailPolicyViolationError');
 
 const timeProvider = {
   now: () => 123456,
 };
+const makePolicy = ({
+  returnSuccess = true,
+  returnErrMsg = 'policy error',
+} = {}) => ({
+  check: jest.fn().mockReturnValue(returnSuccess),
+  errorMessage: returnErrMsg,
+});
 
 const makeContactEmail = props => new ContactEmail({
   emailId: new AutogenerateUUID4().value,
@@ -16,20 +24,16 @@ const makeContactEmail = props => new ContactEmail({
 }, timeProvider);
 
 describe('ContactEmailCollection', () => {
-  let collection = null;
-
-  beforeEach(() => {
-    collection = new ContactEmailCollection(timeProvider);
-  });
-
   describe('its instance', () => {
     test('should be iterable', () => {
+      const collection = new ContactEmailCollection(timeProvider, makePolicy());
       expect(collection[Symbol.iterator]).toBeInstanceOf(Function);
     });
   });
 
   describe('addEmail()', () => {
     test('should add email to collection', () => {
+      const collection = new ContactEmailCollection(timeProvider, makePolicy());
       const email = makeContactEmail();
       collection.addEmail(email);
 
@@ -39,6 +43,7 @@ describe('ContactEmailCollection', () => {
     });
 
     test('should throw error if email already exists', () => {
+      const collection = new ContactEmailCollection(timeProvider, makePolicy());
       const email = makeContactEmail();
 
       expect.assertions(1);
@@ -52,7 +57,23 @@ describe('ContactEmailCollection', () => {
       }
     });
 
+    test('should throw error if email does not pass policy check', () => {
+      const policy = makePolicy({ returnSuccess: false });
+      const collection = new ContactEmailCollection(timeProvider, policy);
+      const email = makeContactEmail();
+
+      expect.assertions(2);
+
+      try {
+        collection.addEmail(email);
+      } catch (err) {
+        expect(err).toBeInstanceOf(ContactEmailPolicyViolationError);
+        expect(err.message).toBe('policy error');
+      }
+    });
+
     test('should reset starred email if new email is starred', () => {
+      const collection = new ContactEmailCollection(timeProvider, makePolicy());
       const spy = jest.spyOn(collection, 'resetStarredEmails');
       const email = makeContactEmail({ isStarred: true });
 
@@ -62,6 +83,7 @@ describe('ContactEmailCollection', () => {
     });
 
     test('should not reset starred email if new email is not starred', () => {
+      const collection = new ContactEmailCollection(timeProvider, makePolicy());
       const spy = jest.spyOn(collection, 'resetStarredEmails');
       const email = makeContactEmail({ isStarred: false });
 
@@ -73,6 +95,7 @@ describe('ContactEmailCollection', () => {
 
   describe('removeEmail()', () => {
     test('should remove email from collection by id', () => {
+      const collection = new ContactEmailCollection(timeProvider, makePolicy());
       const email = makeContactEmail();
       collection
         .addEmail(email)
@@ -84,6 +107,7 @@ describe('ContactEmailCollection', () => {
     });
 
     test('remove twice should do nothing', () => {
+      const collection = new ContactEmailCollection(timeProvider, makePolicy());
       const email1 = makeContactEmail();
       const email2 = makeContactEmail();
       collection
@@ -100,6 +124,7 @@ describe('ContactEmailCollection', () => {
 
   describe('findEmailById()', () => {
     test('should return undefined if email does not exist', () => {
+      const collection = new ContactEmailCollection(timeProvider, makePolicy());
       const email = makeContactEmail();
 
       const result = collection.findEmailById({ emailId: email.emailId });
@@ -108,6 +133,7 @@ describe('ContactEmailCollection', () => {
     });
 
     test('should return found email', () => {
+      const collection = new ContactEmailCollection(timeProvider, makePolicy());
       const email = makeContactEmail();
       collection.addEmail(email);
 
@@ -119,6 +145,7 @@ describe('ContactEmailCollection', () => {
 
   describe('size()', () => {
     test('new collection should return 0', () => {
+      const collection = new ContactEmailCollection(timeProvider, makePolicy());
       expect(collection.size()).toBe(0);
 
       const email = makeContactEmail();
@@ -128,6 +155,7 @@ describe('ContactEmailCollection', () => {
     });
 
     test('when adding item to collection should adjusted size', () => {
+      const collection = new ContactEmailCollection(timeProvider, makePolicy());
       const email = makeContactEmail();
       collection.addEmail(email);
 
@@ -135,6 +163,7 @@ describe('ContactEmailCollection', () => {
     });
 
     test('when removing item from collection should adjusted size', () => {
+      const collection = new ContactEmailCollection(timeProvider, makePolicy());
       const email = makeContactEmail();
       collection
         .addEmail(email)
@@ -146,6 +175,7 @@ describe('ContactEmailCollection', () => {
 
   describe('resetStarredEmails()', () => {
     test('should reset isStarred flag on all emails', () => {
+      const collection = new ContactEmailCollection(timeProvider, makePolicy());
       collection
         .addEmail(makeContactEmail({ isStarred: false }))
         .addEmail(makeContactEmail({ isStarred: true }));

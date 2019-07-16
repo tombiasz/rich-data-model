@@ -1,10 +1,12 @@
 const ContactEmail = require('./contactEmail');
 const ContactEmailAlreadyExistsError = require('./contactEmailAlreadyExistsError');
+const ContactEmailPolicyViolationError = require('./contactEmailPolicyViolationError');
 
 class ContactEmailCollection {
-  constructor(timeProvider) {
+  constructor(timeProvider, policy) {
     this.emails = [];
     this.timeProvider = timeProvider;
+    this.policy = policy;
   }
 
   * [Symbol.iterator]() {
@@ -29,6 +31,10 @@ class ContactEmailCollection {
       updatedAt,
     },
     this.timeProvider);
+
+    if (!this.policy.check(this)) {
+      throw new ContactEmailPolicyViolationError(this.policy.errorMessage);
+    }
 
     if (email.isStarred) {
       this.resetStarredEmails();

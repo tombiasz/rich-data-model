@@ -1,9 +1,12 @@
 const Contact = require('../contact');
-const ContactEmailCollection = require('../contactEmailCollection');
 
 const now = 123456;
 const timeProvider = {
   now: () => now,
+};
+const collectionMock = {
+  addEmail: jest.fn(),
+  removeEmail: jest.fn(),
 };
 const makeContact = () => new Contact({
   id: '16357d7a-5738-4d8b-adc7-b8fa10cd5331',
@@ -11,7 +14,7 @@ const makeContact = () => new Contact({
   firstName: 'foo',
   lastName: 'bar',
   description: 'fizz buzz',
-  emails: new ContactEmailCollection(timeProvider),
+  emails: collectionMock,
   createdAt: 631152000,
   updatedAt: 631152000,
   archivedAt: null,
@@ -45,11 +48,10 @@ describe('Contact entity', () => {
   });
 
   describe('addEmail', () => {
-    test('should add email to emails list', () => {
+    test('should deleget add email to emails collection', () => {
       const contact = makeContact();
-      expect(contact.emails.size()).toBe(0);
       contact.addEmail(validContactEmailProps);
-      expect(contact.emails.size()).toBe(1);
+      expect(collectionMock.addEmail).toHaveBeenCalledWith(validContactEmailProps);
     });
 
     test('should set updatedAt to now', () => {
@@ -62,10 +64,9 @@ describe('Contact entity', () => {
   describe('removeEmail', () => {
     test('should remove email from emails list', () => {
       const contact = makeContact();
-      contact.addEmail(validContactEmailProps);
-      expect(contact.emails.size()).toBe(1);
       contact.removeEmail({ emailId: validContactEmailProps.emailId });
-      expect(contact.emails.size()).toBe(0);
+      expect(collectionMock.removeEmail)
+        .toHaveBeenCalledWith({ emailId: validContactEmailProps.emailId });
     });
 
     test('should set updatedAt to now', () => {
