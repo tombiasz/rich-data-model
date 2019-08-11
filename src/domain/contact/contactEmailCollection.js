@@ -1,11 +1,9 @@
-const ContactEmail = require('./contactEmail');
 const ContactEmailAlreadyExistsError = require('./contactEmailAlreadyExistsError');
 const ContactEmailPolicyViolationError = require('./contactEmailPolicyViolationError');
 
 class ContactEmailCollection {
-  constructor(timeProvider, policy) {
+  constructor(policy) {
     this.emails = [];
-    this.timeProvider = timeProvider;
     this.policy = policy;
   }
 
@@ -13,34 +11,21 @@ class ContactEmailCollection {
     yield* this.emails;
   }
 
-  addEmail({
-    emailId,
-    isStarred,
-    createdAt,
-    updatedAt,
-  }) {
-    const exists = this.findEmailById({ emailId });
+  addEmail(contactEmail) {
+    const exists = this.findEmailById(contactEmail);
     if (exists) {
       throw new ContactEmailAlreadyExistsError();
     }
-
-    const email = new ContactEmail({
-      emailId,
-      isStarred,
-      createdAt,
-      updatedAt,
-    },
-    this.timeProvider);
 
     if (!this.policy.check(this)) {
       throw new ContactEmailPolicyViolationError(this.policy.errorMessage);
     }
 
-    if (email.isStarred) {
+    if (contactEmail.isStarred) {
       this.resetStarredEmails();
     }
 
-    this.emails.push(email);
+    this.emails.push(contactEmail);
     return this;
   }
 

@@ -1,5 +1,6 @@
 const timeProvider = require('../../utils/timeProvider');
 const UUID4 = require('../uuid4');
+const Timestamp = require('../timestamp');
 const Email = require('./email');
 const EmailAddress = require('./emailAddress');
 
@@ -10,12 +11,12 @@ const makeEmail = ({
 }) => {
   const _id = new UUID4(id);
   const _email = new EmailAddress(email);
-  const _createdAt = createdAt || timeProvider.now();
+  const _createdAt = new Timestamp(createdAt || timeProvider.now());
 
   return new Email({
     id: _id.value,
     email: _email.value,
-    createdAt: _createdAt,
+    createdAt: _createdAt.value,
   });
 };
 

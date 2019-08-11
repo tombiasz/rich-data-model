@@ -13,7 +13,7 @@ describe('ContactEmailCollection', () => {
   describe('addEmail()', () => {
     test('should add email to collection', () => {
       const collection = makeContactEmailCollection();
-      expect(collection[Symbol.iterator]).toBeInstanceOf(Function);
+
       const email = makeContactEmail();
       collection.addEmail(email);
 

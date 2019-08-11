@@ -8,34 +8,31 @@ class Contact {
     emails,
     createdAt,
     updatedAt,
-  }, timeProvider) {
+  }) {
     this.id = id;
     this.ownerId = ownerId;
     this.firstName = firstName;
     this.lastName = lastName;
     this.description = description;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
+    this._createdAt = createdAt;
+    this._updatedAt = updatedAt;
     this.emails = emails;
-    this.timeProvider = timeProvider;
   }
 
   get fullName() {
     return `${this.firstName} ${this.lastName}`;
   }
 
-  addEmail({
-    emailId,
-    isStarred,
-    createdAt,
-    updatedAt,
-  }) {
-    this.emails.addEmail({
-      emailId,
-      isStarred,
-      createdAt,
-      updatedAt,
-    });
+  get createdAt() {
+    return this._createdAt.value;
+  }
+
+  get updatedAt() {
+    return this._updatedAt.value;
+  }
+
+  addEmail(contactEmail) {
+    this.emails.addEmail(contactEmail);
     this.touch();
     return this;
   }
@@ -47,7 +44,7 @@ class Contact {
   }
 
   touch() {
-    this.updatedAt = this.timeProvider.now();
+    this._updatedAt.touch();
     return this;
   }
 }

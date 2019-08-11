@@ -1,4 +1,5 @@
 const chance = require('chance').Chance();
+const Timestamp = require('../../timestamp');
 const Contact = require('../contact');
 const ContactEmail = require('../contactEmail');
 const ContactEmailCollection = require('../contactEmailCollection');
@@ -13,25 +14,27 @@ const collectionMock = {
   removeEmail: jest.fn(),
 };
 
-const makeContact = props => new Contact({
+const makeTimestamp = value => new Timestamp(value || chance.timestamp(), timeProvider);
+
+const makeContact = (props = {}) => new Contact({
   id: chance.guid({ version: 4 }),
   ownerId: chance.guid({ version: 4 }),
   firstName: chance.first(),
   lastName: chance.last(),
   description: chance.paragraph(),
   emails: collectionMock,
-  createdAt: chance.timestamp(),
-  updatedAt: chance.timestamp(),
   ...props,
-}, timeProvider);
+  createdAt: makeTimestamp(props.createdAt),
+  updatedAt: makeTimestamp(props.updatedAt),
+});
 
-const makeContactEmail = props => new ContactEmail({
+const makeContactEmail = (props = {}) => new ContactEmail({
   emailId: chance.guid({ version: 4 }),
   isStarred: false,
-  createdAt: chance.timestamp(),
-  updatedAt: chance.timestamp(),
   ...props,
-}, timeProvider);
+  createdAt: makeTimestamp(props.createdAt),
+  updatedAt: makeTimestamp(props.updatedAt),
+});
 
 const makePolicy = ({
   returnSuccess = true,
@@ -42,10 +45,8 @@ const makePolicy = ({
 });
 
 const makeContactEmailCollection = ({
-  // eslint-disable-next-line no-shadow
-  aTimeProvider = timeProvider,
   aPolicy = makePolicy(),
-} = {}) => new ContactEmailCollection(aTimeProvider, aPolicy);
+} = {}) => new ContactEmailCollection(aPolicy);
 
 module.exports = {
   NOW,

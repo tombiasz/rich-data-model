@@ -4,14 +4,19 @@ class ContactEmail {
     isStarred,
     createdAt,
     updatedAt,
-  },
-  timeProvider) {
+  }) {
     this.emailId = emailId;
     this.isStarred = isStarred;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
+    this._createdAt = createdAt;
+    this._updatedAt = updatedAt;
+  }
 
-    this.timeProvider = timeProvider;
+  get createdAt() {
+    return this._createdAt.value;
+  }
+
+  get updatedAt() {
+    return this._updatedAt.value;
   }
 
   star() {
@@ -27,7 +32,7 @@ class ContactEmail {
   }
 
   touch() {
-    this.updatedAt = this.timeProvider.now();
+    this._updatedAt.touch();
     return this;
   }
 }
